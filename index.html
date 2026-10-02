@@ -1,0 +1,655 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <title>Guía práctica de Python</title>
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;600;800&family=JetBrains+Mono:wght@400;600&display=swap"
+    />
+    <style>
+      :root {
+        --bg: #edf1f4;
+        --ink: #16202a;
+        --mut: #56667a;
+        --panel: #fff;
+        --line: #cfd8e1;
+        --acc: #1f5fa8;
+        --hi: #f2c94c;
+        --ok: #1e7b4f;
+        --bad: #b3392f;
+        --code: #14202b;
+        --codeink: #e6edf3;
+        box-sizing: border-box;
+        padding-top: env(safe-area-inset-top, 0px);
+        padding-bottom: env(safe-area-inset-bottom, 0px);
+      }
+      @media (prefers-color-scheme: dark) {
+        :root:not([data-theme="light"]) {
+          --bg: #0f161d;
+          --ink: #e6edf3;
+          --mut: #93a4b8;
+          --panel: #18222c;
+          --line: #2b3947;
+          --acc: #6ab0f5;
+          --ok: #4cc38a;
+          --bad: #f0776d;
+        }
+      }
+      :root[data-theme="dark"] {
+        --bg: #0f161d;
+        --ink: #e6edf3;
+        --mut: #93a4b8;
+        --panel: #18222c;
+        --line: #2b3947;
+        --acc: #6ab0f5;
+        --ok: #4cc38a;
+        --bad: #f0776d;
+      }
+      html {
+        scroll-padding-top: env(safe-area-inset-top, 0px);
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--ink);
+        font:
+          16px/1.6 "Bricolage Grotesque",
+          system-ui,
+          sans-serif;
+      }
+      header {
+        padding: 24px 20px 8px;
+        max-width: 920px;
+        margin: 0 auto;
+      }
+      h1 {
+        font-size: clamp(28px, 5vw, 44px);
+        line-height: 1.1;
+        margin: 0 0 6px;
+        font-weight: 800;
+      }
+      header p {
+        margin: 0;
+        color: var(--mut);
+      }
+      .bar {
+        height: 10px;
+        background: var(--line);
+        border-radius: 6px;
+        margin: 14px 0 4px;
+        overflow: hidden;
+      }
+      .bar i {
+        display: block;
+        height: 100%;
+        width: 0;
+        background: var(--hi);
+        transition: width 0.3s;
+      }
+      .small {
+        font-size: 14px;
+        color: var(--mut);
+      }
+      nav {
+        display: flex;
+        gap: 8px;
+        overflow-x: auto;
+        padding: 12px 20px;
+        max-width: 920px;
+        margin: 0 auto;
+      }
+      nav button {
+        flex: none;
+        border: 1px solid var(--line);
+        background: var(--panel);
+        color: var(--ink);
+        padding: 8px 14px;
+        border-radius: 20px;
+        font: inherit;
+        cursor: pointer;
+      }
+      nav button[aria-current="true"] {
+        background: var(--acc);
+        border-color: var(--acc);
+        color: #fff;
+      }
+      nav button.done::after {
+        content: " ✓";
+      }
+      main {
+        max-width: 920px;
+        margin: 0 auto;
+        padding: 8px 20px 48px;
+      }
+      h2 {
+        font-size: 28px;
+        margin: 8px 0 4px;
+      }
+      h3 {
+        font-size: 18px;
+        margin: 28px 0 8px;
+      }
+      p {
+        max-width: 70ch;
+      }
+      pre {
+        background: var(--code);
+        color: var(--codeink);
+        padding: 14px 16px;
+        border-radius: 8px;
+        overflow-x: auto;
+        font:
+          14px/1.6 "JetBrains Mono",
+          ui-monospace,
+          monospace;
+        margin: 10px 0;
+      }
+      .k {
+        color: #f2c94c;
+      }
+      .s {
+        color: #8fd5a6;
+      }
+      .c {
+        color: #7f93a8;
+      }
+      .q {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 16px;
+        margin: 12px 0;
+      }
+      .q p {
+        margin: 0 0 8px;
+        font-weight: 600;
+      }
+      .opts {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+      .opts button,
+      .fill button {
+        font:
+          14px "JetBrains Mono",
+          monospace;
+        padding: 8px 14px;
+        border: 1px solid var(--line);
+        border-radius: 6px;
+        background: var(--bg);
+        color: var(--ink);
+        cursor: pointer;
+      }
+      .opts button:hover:enabled,
+      .fill button:hover {
+        border-color: var(--acc);
+      }
+      .opts button.ok {
+        background: var(--ok);
+        border-color: var(--ok);
+        color: #fff;
+      }
+      .opts button.no {
+        background: var(--bad);
+        border-color: var(--bad);
+        color: #fff;
+        opacity: 0.85;
+      }
+      .fill {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+      .fill input {
+        font:
+          14px "JetBrains Mono",
+          monospace;
+        padding: 8px 10px;
+        border: 1px solid var(--line);
+        border-radius: 6px;
+        background: var(--bg);
+        color: var(--ink);
+        min-width: 0;
+        flex: 1 1 160px;
+      }
+      .fb {
+        margin-top: 10px;
+        font-size: 15px;
+        min-height: 1em;
+      }
+      .fb.ok {
+        color: var(--ok);
+      }
+      .fb.no {
+        color: var(--bad);
+      }
+      .foot {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 28px;
+        gap: 8px;
+      }
+      .foot button {
+        font: inherit;
+        padding: 10px 18px;
+        border-radius: 6px;
+        border: 1px solid var(--acc);
+        background: var(--acc);
+        color: #fff;
+        cursor: pointer;
+      }
+      .foot button.ghost {
+        background: transparent;
+        color: var(--acc);
+      }
+      :focus-visible {
+        outline: 3px solid var(--hi);
+        outline-offset: 2px;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>Guía práctica de Python</h1>
+      <p>
+        Lee, predice la salida y completa el código. Repasa cada tema antes del
+        examen.
+      </p>
+      <div class="bar"><i id="pb"></i></div>
+      <div class="small" id="pt"></div>
+    </header>
+    <nav id="nav" aria-label="Temas"></nav>
+    <main id="main"></main>
+
+    <script>
+      const T = [
+        {
+          t: "Entrada y salida",
+          i: "<code>print()</code> muestra datos. <code>input()</code> siempre devuelve texto (<code>str</code>): conviértelo con <code>int()</code> o <code>float()</code>. Las f-strings insertan variables dentro del texto.",
+          c: `nombre = input("Nombre: ")
+edad = int(input("Edad: "))
+print(f"{nombre} tendrá {edad + 1} años")`,
+          q: [
+            {
+              q: "El usuario escribe 5. ¿Qué imprime?",
+              c: `x = input()
+print(x + x)`,
+              o: ["10", "55", "Error", "x + x"],
+              a: 1,
+              w: "input() devuelve str, y + concatena textos: '5' + '5' = '55'.",
+            },
+            {
+              q: "¿Qué imprime?",
+              c: `print("a", "b", sep="-")`,
+              o: ["a b", "a-b", "ab", "a,b"],
+              a: 1,
+              w: "sep define el separador entre los valores (por defecto es un espacio).",
+            },
+          ],
+          f: {
+            p: "Convierte lo que escribe el usuario a entero:",
+            c: `n = ___(input("Número: "))`,
+            a: ["int"],
+            h: "La función que convierte a entero.",
+          },
+        },
+
+        {
+          t: "Variables y tipos",
+          i: "Los tipos básicos son <code>int</code>, <code>float</code>, <code>str</code> y <code>bool</code>. Python asigna el tipo según el valor; <code>type()</code> lo consulta. Los nombres no llevan espacios, no empiezan con número y distinguen mayúsculas de minúsculas.",
+          c: `precio = 19.99
+cantidad = 3
+nombre = "Café"
+activo = True
+print(type(precio))   # <class 'float'>`,
+          q: [
+            {
+              q: "¿Qué tipo tiene el resultado de 7 / 2?",
+              o: ["int", "float", "str", "bool"],
+              a: 1,
+              w: "La división / siempre devuelve float: 3.5.",
+            },
+            {
+              q: "¿Cuál es un nombre de variable válido?",
+              o: ["2cosas", "mi-var", "mi_var", "mi var"],
+              a: 2,
+              w: "Solo letras, números y guion bajo, sin empezar con número.",
+            },
+          ],
+          f: {
+            p: "Crea la variable activo con el valor booleano verdadero:",
+            c: `activo = ___`,
+            a: ["True"],
+            h: "Con mayúscula inicial.",
+          },
+        },
+
+        {
+          t: "Operadores",
+          i: "Aritméticos: <code>+ - * /</code>, <code>//</code> (división entera), <code>%</code> (residuo), <code>**</code> (potencia). Comparación: <code>== != &lt; &gt; &lt;= &gt;=</code>. Lógicos: <code>and or not</code>.",
+          c: `print(17 // 5)   # 3
+print(17 % 5)    # 2
+print(2 ** 3)    # 8
+print(5 > 3 and 2 > 1)   # True`,
+          q: [
+            {
+              q: "¿Cuánto vale 10 % 3?",
+              o: ["3", "1", "0", "3.33"],
+              a: 1,
+              w: "10 = 3·3 + 1, el residuo es 1.",
+            },
+            {
+              q: "¿Qué imprime?",
+              c: `print(not (3 > 2 and 1 > 2))`,
+              o: ["True", "False", "Error", "None"],
+              a: 0,
+              w: "(True and False) es False, y not False es True.",
+            },
+          ],
+          f: {
+            p: "Condición para saber si n es par:",
+            c: `if n ___ 2 == 0:`,
+            a: ["%"],
+            h: "El operador del residuo.",
+          },
+        },
+
+        {
+          t: "Condicionales",
+          i: "<code>if</code>, <code>elif</code>, <code>else</code>: solo se ejecuta la primera rama verdadera. Los dos puntos <code>:</code> son obligatorios y la indentación (4 espacios) define el bloque.",
+          c: `nota = 85
+if nota >= 90:
+    print("A")
+elif nota >= 70:
+    print("B")
+else:
+    print("C")`,
+          q: [
+            {
+              q: "¿Qué imprime?",
+              c: `x = 15
+if x > 10:
+    print("A")
+elif x > 5:
+    print("B")
+else:
+    print("C")`,
+              o: ["A", "B", "C", "A y B"],
+              a: 0,
+              w: "x > 10 es verdadero; el elif ya no se evalúa.",
+            },
+            {
+              q: "¿Qué error da un if sin los dos puntos al final?",
+              o: ["SyntaxError", "NameError", "TypeError", "Ninguno"],
+              a: 0,
+              w: "Falta un símbolo obligatorio: es un error de sintaxis.",
+            },
+          ],
+          f: {
+            p: "Completa la línea para que sea válida:",
+            c: `if edad >= 18___`,
+            a: [":"],
+            h: "El símbolo que abre el bloque.",
+          },
+        },
+
+        {
+          t: "Ciclos",
+          i: "<code>for</code> recorre una secuencia. <code>range(n)</code> va de 0 a n-1; <code>range(a, b)</code> excluye b. <code>while</code> repite mientras la condición sea verdadera (asegúrate de que cambie). <code>break</code> sale del ciclo; <code>continue</code> salta a la siguiente vuelta.",
+          c: `for i in range(1, 4):
+    print(i)        # 1 2 3
+
+contador = 0
+while contador < 3:
+    contador += 1`,
+          q: [
+            {
+              q: "¿Qué es list(range(2, 6))?",
+              o: ["[2, 3, 4, 5, 6]", "[2, 3, 4, 5]", "[3, 4, 5, 6]", "[2, 6]"],
+              a: 1,
+              w: "Incluye el inicio y excluye el final.",
+            },
+            {
+              q: "¿Qué imprime?",
+              c: `total = 0
+for i in range(1, 4):
+    total += i
+print(total)`,
+              o: ["3", "6", "10", "4"],
+              a: 1,
+              w: "1 + 2 + 3 = 6.",
+            },
+          ],
+          f: {
+            p: "Recorre los números del 0 al 9:",
+            c: `for i in ___(10):`,
+            a: ["range"],
+            h: "La función que genera secuencias de enteros.",
+          },
+        },
+
+        {
+          t: "Listas y diccionarios",
+          i: "Una lista es ordenada y modificable; los índices empiezan en 0 y los negativos cuentan desde el final. Usa <code>append()</code>, <code>len()</code>, <code>sort()</code>. Un diccionario guarda pares <code>clave: valor</code> y se consulta por clave.",
+          c: `frutas = ["pera", "uva"]
+frutas.append("kiwi")
+print(frutas[-1])        # kiwi
+
+alumno = {"nombre": "Ana", "edad": 20}
+print(alumno["nombre"])  # Ana`,
+          q: [
+            {
+              q: "¿Qué imprime?",
+              c: `l = [10, 20, 30]
+print(l[-1])`,
+              o: ["10", "20", "30", "Error"],
+              a: 2,
+              w: "El índice -1 es el último elemento.",
+            },
+            {
+              q: "¿Cuánto vale len({'a': 1, 'b': 2})?",
+              o: ["1", "2", "3", "Error"],
+              a: 1,
+              w: "len cuenta los pares: hay dos claves.",
+            },
+          ],
+          f: {
+            p: "Agrega 5 al final de la lista nums:",
+            c: `nums.___(5)`,
+            a: ["append"],
+            h: "El método que añade al final.",
+          },
+        },
+
+        {
+          t: "Funciones",
+          i: "Se definen con <code>def nombre(parámetros):</code>. <code>return</code> devuelve un valor; sin él, la función devuelve <code>None</code>. Las variables internas son locales. Un parámetro puede tener valor por defecto.",
+          c: `def area(base, altura):
+    return base * altura / 2
+
+print(area(4, 3))   # 6.0
+
+def saludar(nombre="amigo"):
+    print("Hola", nombre)`,
+          q: [
+            {
+              q: "¿Qué imprime?",
+              c: `def f(x):
+    x * 2
+print(f(3))`,
+              o: ["6", "3", "None", "Error"],
+              a: 2,
+              w: "No hay return, así que la función devuelve None.",
+            },
+            {
+              q: "¿Qué imprime?",
+              c: `def suma(a, b=10):
+    return a + b
+print(suma(5))`,
+              o: ["5", "10", "15", "Error"],
+              a: 2,
+              w: "b toma su valor por defecto: 5 + 10.",
+            },
+          ],
+          f: {
+            p: "Define cuadrado(n) para que devuelva n al cuadrado:",
+            c: `def cuadrado(n):
+    ___ n ** 2`,
+            a: ["return"],
+            h: "La palabra que devuelve un valor.",
+          },
+        },
+      ];
+
+      const $ = (s) => document.querySelector(s);
+      let cur = 0,
+        S = {};
+      try {
+        S = JSON.parse(localStorage.getItem("py-guia") || "{}");
+      } catch (e) {}
+      const save = () => {
+        try {
+          localStorage.setItem("py-guia", JSON.stringify(S));
+        } catch (e) {}
+      };
+      const esc = (s) =>
+        s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+      const hl = (s) =>
+        esc(s).replace(
+          /(#.*)|("[^"\n]*"|'[^'\n]*')|\b(def|if|elif|else|for|while|in|return|and|or|not|True|False|None|break|continue)\b/g,
+          (m, c, st, k) =>
+            c
+              ? `<span class="c">${c}</span>`
+              : st
+                ? `<span class="s">${st}</span>`
+                : `<span class="k">${k}</span>`,
+        );
+      const total = T.length * 3;
+      const doneIn = (i) =>
+        [0, 1].filter((n) => S[i + ":q" + n]).length + (S[i + ":f"] ? 1 : 0);
+
+      function progress() {
+        const d = T.reduce((a, _, i) => a + doneIn(i), 0);
+        $("#pb").style.width = (d / total) * 100 + "%";
+        $("#pt").textContent = d + " de " + total + " ejercicios resueltos";
+        document
+          .querySelectorAll("nav button")
+          .forEach((b, i) => b.classList.toggle("done", doneIn(i) === 3));
+      }
+
+      function nav() {
+        $("#nav").innerHTML = "";
+        T.forEach((t, i) => {
+          const b = document.createElement("button");
+          b.textContent = t.t;
+          b.onclick = () => {
+            cur = i;
+            render();
+          };
+          $("#nav").appendChild(b);
+        });
+      }
+
+      function render() {
+        const t = T[cur];
+        document
+          .querySelectorAll("nav button")
+          .forEach((b, i) => b.setAttribute("aria-current", i === cur));
+        let h = `<h2>${t.t}</h2><p>${t.i}</p><pre>${hl(t.c)}</pre><h3>Predice la salida</h3>`;
+        t.q.forEach((q, n) => {
+          h += `<div class="q" data-n="${n}"><p>${q.q}</p>${q.c ? `<pre>${hl(q.c)}</pre>` : ""}<div class="opts">${q.o.map((o, j) => `<button data-j="${j}">${esc(o)}</button>`).join("")}</div><div class="fb"></div></div>`;
+        });
+        h += `<h3>Completa el código</h3><div class="q" id="fq"><p>${t.f.p}</p><pre>${hl(t.f.c)}</pre><div class="fill"><input id="fi" aria-label="Tu respuesta" autocomplete="off" spellcheck="false" placeholder="Tu respuesta"><button id="fb">Revisar</button></div><div class="fb" id="ff"></div></div>`;
+        h += `<div class="foot"><button class="ghost" id="prev" ${cur === 0 ? "disabled" : ""}>Anterior</button><button id="next" ${cur === T.length - 1 ? "disabled" : ""}>Siguiente</button></div>`;
+        h += `<p class="small"><a href="#" id="reset">Reiniciar progreso</a></p>`;
+        $("#main").innerHTML = h;
+
+        document.querySelectorAll(".q[data-n]").forEach((el) => {
+          const n = +el.dataset.n,
+            q = t.q[n],
+            fb = el.querySelector(".fb"),
+            bs = el.querySelectorAll("button");
+          const win = () => {
+            bs.forEach((b) => (b.disabled = true));
+            bs[q.a].classList.add("ok");
+            fb.className = "fb ok";
+            fb.textContent = "Correcto. " + q.w;
+          };
+          if (S[cur + ":q" + n]) win();
+          bs.forEach(
+            (b) =>
+              (b.onclick = () => {
+                if (+b.dataset.j === q.a) {
+                  S[cur + ":q" + n] = 1;
+                  save();
+                  win();
+                  progress();
+                } else {
+                  b.classList.add("no");
+                  b.disabled = true;
+                  fb.className = "fb no";
+                  fb.textContent = "No es esa. Inténtalo de nuevo.";
+                }
+              }),
+          );
+        });
+
+        const fi = $("#fi"),
+          ff = $("#ff");
+        const okF = () => {
+          ff.className = "fb ok";
+          ff.textContent = "Correcto.";
+          fi.value = t.f.a[0];
+          fi.disabled = true;
+        };
+        if (S[cur + ":f"]) okF();
+        const chk = () => {
+          const v = fi.value.trim();
+          if (t.f.a.includes(v)) {
+            S[cur + ":f"] = 1;
+            save();
+            okF();
+            progress();
+          } else {
+            ff.className = "fb no";
+            ff.textContent = "Todavía no. Pista: " + t.f.h;
+          }
+        };
+        $("#fb").onclick = chk;
+        fi.onkeydown = (e) => {
+          if (e.key === "Enter") chk();
+        };
+        $("#prev").onclick = () => {
+          cur--;
+          render();
+          scrollTo(0, 0);
+        };
+        $("#next").onclick = () => {
+          cur++;
+          render();
+          scrollTo(0, 0);
+        };
+        $("#reset").onclick = (e) => {
+          e.preventDefault();
+          if (confirm("¿Borrar todo tu progreso?")) {
+            S = {};
+            save();
+            render();
+          }
+        };
+        progress();
+      }
+      nav();
+      render();
+    </script>
+  </body>
+</html>
